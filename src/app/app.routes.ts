@@ -9,4 +9,11 @@ export const routes: Routes = [
         (c) => c.TimelineComponent
       ),
   },
+  {
+    path: 'events',
+    loadComponent: () =>
+      import('./features/events/events.component').then(
+        (c) => c.EventsComponent
+      ),
+  },
 ];
