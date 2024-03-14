@@ -1,5 +1,3 @@
-import { User } from './user';
-
 export class Sport {
   id: number;
   name: string;
