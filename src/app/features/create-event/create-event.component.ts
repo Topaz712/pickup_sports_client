@@ -27,7 +27,9 @@ export class CreateEventComponent implements OnInit {
     guests: new FormControl(''),
     sportIds: new FormArray([]),
   });
+
   sports: Sport[] = [];
+  selectedFile: File | null = null;
 
   constructor(
     private sportService: SportService,
@@ -62,7 +64,7 @@ export class CreateEventComponent implements OnInit {
     return this.eventForm.get('sportIds') as FormArray;
   }
 
-  onCreateEvent() {
+  extractSportIds() {
     const sportIdsFormValue = this.eventForm.value.sportIds;
     const sportIds = sportIdsFormValue
       .map((checked: boolean, i: number) => {
@@ -71,12 +73,29 @@ export class CreateEventComponent implements OnInit {
       .filter((id: any) => {
         return id !== null;
       });
+    return sportIds;
+  }
 
-    const event: Event = {
-      sport_ids: sportIds,
-      ...this.eventForm.value,
-    };
-    this.eventService.createEvent(event).subscribe({
+  onCreateEvent() {
+    const sportIds = this.extractSportIds();
+    const formData: any = new FormData();
+    formData.append('title', this.eventForm.get('title')!.value);
+    formData.append('content', this.eventForm.get('content')!.value);
+    formData.append('guests', this.eventForm.get('guests')!.value);
+    formData.append(
+      'start_date_time',
+      this.eventForm.get('start_date_time')!.value
+    );
+    formData.append(
+      'end_date_time',
+      this.eventForm.get('end_date_time')!.value
+    );
+    sportIds.forEach((sportId: any) => {
+      formData.append('sport_ids[]', sportId);
+    });
+    formData.append('cover_image', this.selectedFile, this.selectedFile!.name);
+
+    this.eventService.createEvent(formData).subscribe({
       next: () => {
         this.router.navigate(['/events']);
       },
@@ -84,5 +103,11 @@ export class CreateEventComponent implements OnInit {
         console.log(error);
       },
     });
+  }
+
+  onFileSelected(event: any) {
+    if (event.target.files && event.target.files[0]) {
+      this.selectedFile = event.target.files[0];
+    }
   }
 }
