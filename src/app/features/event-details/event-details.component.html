@@ -4,12 +4,13 @@
   </div>
   <h2 class="event-title">{{event.title}}</h2>
   <p class="event-content">{{event.content}}</p>
+  <p>Created by {{event.creator.username}}</p>
   <div class="event-info">
     <span class="event-dates">
       {{event.start_date_time | date: "medium"}} - {{event.end_date_time | date: "medium"}}
     </span>
     <div class="event-creator">
-      created by: <strong>{{event.user.username}}</strong>
+      created by: <strong>{{event.creator.username}}</strong>
     </div>
   </div>
 
@@ -21,4 +22,9 @@
       }
     </ul>
   </div>
+
+  <!-- check if the current user is not the event creator -->
+  @if(event.creator.id !== currentUser?.id) {
+    <button class="join-button" (click)="toggleJoinEvent()">{{hasJoined ? 'leave' : 'join'}}</button>
+  }
 </div>
