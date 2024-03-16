@@ -18,8 +18,12 @@ export class NotificationService {
 
     this.channel = this.pusher.subscribe(userId.toString());
 
-    this.channel.bind('notification', (data:any) => {
+    this.channel.bind('notification', (data: any) => {
       console.log(data);
-    })
+    });
+  }
+
+  unsubscribeChannel(userId: number) {
+    this.pusher.unsubscribe(userId.toString());
   }
 }

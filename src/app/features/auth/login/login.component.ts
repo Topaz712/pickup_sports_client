@@ -7,6 +7,7 @@ import {
 } from '@angular/forms';
 import { AuthenticationService } from '../../../core/services/authentication.service';
 import { Router } from '@angular/router';
+import { NotificationService } from '../../../core/services/notification.service';
 
 @Component({
   selector: 'app-login',
@@ -25,7 +26,8 @@ export class LoginComponent {
 
   constructor(
     private authService: AuthenticationService,
-    private router: Router
+    private router: Router,
+    private notificationService: NotificationService
   ) {}
 
   login() {
@@ -35,6 +37,9 @@ export class LoginComponent {
 
       this.authService.login(username, password).subscribe({
         next: (res: any) => {
+          // subscribe to pusher channel
+          this.notificationService.listen(res.current_user.id)
+
           this.router.navigate(['/']);
         },
         error: (error: any) => {
