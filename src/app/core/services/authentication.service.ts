@@ -50,7 +50,9 @@ export class AuthenticationService {
   logout() {
     const currentUser = this.userService.currentUserBehaviorSubject.value;
     // unsubscribe from pusher channel
-    this.notificationService.unsubscribeChannel(currentUser!.id);
+    if (currentUser) {
+      this.notificationService.unsubscribeChannel(currentUser!.id);
+    }
     localStorage.removeItem('token');
     this.router.navigate(['/login']);
   }
